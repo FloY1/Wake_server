@@ -1,14 +1,11 @@
 package net.proselyte.jwtappdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 
@@ -22,26 +19,48 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
-public class User extends BaseEntity {
+@ToString
+public class User  {
 
-    @Column(name = "username")
-    private String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "password")
+    private String phone;
+    private String userName;
     private String password;
+    private Long seasonTicket;
+
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
+
+
+    @OneToMany(mappedBy = "client",fetch = FetchType.LAZY)
+    @JsonBackReference
+    private List<Booking> bookingList;
+
+    @JsonIgnore
+    public List<Booking> getSortedBookingHistory () {
+
+        for (int i = 0; i < bookingList.size(); i++) {
+            for (int j = i + 1; j < bookingList.size(); j++) {
+                if (bookingList.get(i).getBookingDate().compareTo(bookingList.get(j).getBookingDate()) > 0 || (bookingList.get(i).getBookingDate().compareTo(bookingList.get(j).getBookingDate()) == 0)) {
+
+                }
+
+            }
+        }
+        return bookingList;
+    }
+
+
 }

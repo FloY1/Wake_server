@@ -1,0 +1,25 @@
+{
+  "name": "jwtappdemo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/proselytear/jwtappdemo.git",
+  "author": "FloY1 <artem.smolonskiy@mail.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "dependencies": {
+    "vue": "^2.6.10",
+    "vue-resource": "^1.5.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "vue-loader": "^15.7.0",
+    "vue-template-compiler": "^2.6.10",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.1"
+  }
+}

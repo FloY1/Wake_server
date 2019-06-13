@@ -18,34 +18,17 @@ import java.util.Date;
 public class JwtUser implements UserDetails {
 
     private final Long id;
-    private final String username;
-    private final String firstName;
-    private final String lastName;
+    private final String phone;
     private final String password;
-    private final String email;
     private final boolean enabled;
-    private final Date lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public JwtUser(
-            Long id,
-            String username,
-            String firstName,
-            String lastName,
-            String email,
-            String password, Collection<? extends GrantedAuthority> authorities,
-            boolean enabled,
-            Date lastPasswordResetDate
-    ) {
+    public JwtUser(Long id, String phone, String password, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        this.phone = phone;
         this.password = password;
-        this.authorities = authorities;
         this.enabled = enabled;
-        this.lastPasswordResetDate = lastPasswordResetDate;
+        this.authorities = authorities;
     }
 
     @JsonIgnore
@@ -55,7 +38,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return phone;
     }
 
     @JsonIgnore
@@ -76,17 +59,6 @@ public class JwtUser implements UserDetails {
         return true;
     }
 
-    public String getFirstname() {
-        return firstName;
-    }
-
-    public String getLastname() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 
     @JsonIgnore
     @Override
@@ -104,8 +76,4 @@ public class JwtUser implements UserDetails {
         return enabled;
     }
 
-    @JsonIgnore
-    public Date getLastPasswordResetDate() {
-        return lastPasswordResetDate;
-    }
 }
