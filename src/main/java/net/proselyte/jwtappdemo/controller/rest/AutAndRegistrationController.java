@@ -73,4 +73,6 @@ public class AutAndRegistrationController {
             throw new BadCredentialsException("Invalid phone or password");
         }
     }
+
+
 }

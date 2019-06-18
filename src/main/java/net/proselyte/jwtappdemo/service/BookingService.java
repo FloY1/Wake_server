@@ -51,4 +51,8 @@ public class BookingService {
                 booking.getReversNumber()
         );
     }
+
+    public Iterable<Booking> findAll() {
+        return bookingRepo.findAll();
+    }
 }
