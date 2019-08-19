@@ -8,7 +8,7 @@ import net.proselyte.jwtappdemo.JsonView.Views;
 
 @Data
 @AllArgsConstructor
-@JsonView(Views.IdTimeStatus.class)
+@JsonView(Views.IdTimeDateReversStatus.class)
 public class WsEventDto {
     private ObjectType objectType;
     private EventType eventType;

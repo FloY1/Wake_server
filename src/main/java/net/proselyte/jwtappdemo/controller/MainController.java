@@ -1,8 +1,10 @@
 package net.proselyte.jwtappdemo.controller;
 
 import net.proselyte.jwtappdemo.model.Booking;
+import net.proselyte.jwtappdemo.model.Role;
 import net.proselyte.jwtappdemo.security.jwt.JwtUser;
 import net.proselyte.jwtappdemo.service.BookingService;
+import net.proselyte.jwtappdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,20 +22,18 @@ public class MainController {
 
 
     private BookingService bookingService;
+    private UserService userService;
+
 
     @Autowired
-    public MainController(BookingService bookingService) {
+    public MainController(BookingService bookingService, UserService userService) {
         this.bookingService = bookingService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public String getMain(Model model, @AuthenticationPrincipal JwtUser user){
+    public String getMain(Model model){
 
-        if(user!=null) {
-           model.addAttribute("bookigList",bookingService.findAll());
-        }else{
-            model.addAttribute("bookigList",null);
-        }
         model.addAttribute("isDevMode", "dev".equals(profile));
 
 

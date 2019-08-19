@@ -1,7 +1,7 @@
 package net.proselyte.jwtappdemo.security.jwt;
 
 import net.proselyte.jwtappdemo.model.Role;
-import net.proselyte.jwtappdemo.model.Status;
+import net.proselyte.jwtappdemo.model.enums.Status;
 import net.proselyte.jwtappdemo.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

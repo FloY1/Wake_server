@@ -1,4 +1,4 @@
-package net.proselyte.jwtappdemo.model;
+package net.proselyte.jwtappdemo.model.enums;
 
 /**
  * Enumeration that represents status of domain objects - ACTIVE, DELETED, etc.

@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * REST controller for authentication requests (login, logout, register, etc.)
  *
- * @author Eugene Suleimanov
+ * @author Arthem Smolonskiy
  * @version 1.0
  */
 

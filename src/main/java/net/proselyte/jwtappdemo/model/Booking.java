@@ -2,10 +2,11 @@ package net.proselyte.jwtappdemo.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import net.proselyte.jwtappdemo.JsonView.Views;
+import net.proselyte.jwtappdemo.model.enums.BookingStatus;
+import net.proselyte.jwtappdemo.model.enums.Location;
 
 import javax.persistence.*;
 
@@ -17,18 +18,18 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.IdTimeStatus.class)
     private Long id;
 
-
+    @JsonView(Views.IdTimeDateReversStatus.class)
     private String bookingDate;
 
 
-
     @Enumerated(EnumType.STRING)
+    @JsonView(Views.IdTimeDateReversStatus.class)
     private Location location;
 
 
+    @JsonView(Views.IdTimeDateReversStatus.class)
     private int reversNumber;
     @JsonView(Views.IdTimeStatus.class)
     private int startTime;

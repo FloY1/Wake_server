@@ -1,12 +1,17 @@
 package net.proselyte.jwtappdemo.service;
 
+import com.itextpdf.text.Document;
 import lombok.extern.slf4j.Slf4j;
 import net.proselyte.jwtappdemo.model.Booking;
-import net.proselyte.jwtappdemo.model.BookingStatus;
+import net.proselyte.jwtappdemo.model.enums.BookingStatus;
+import net.proselyte.jwtappdemo.model.enums.Location;
 import net.proselyte.jwtappdemo.repository.BookingRepo;
 import net.proselyte.jwtappdemo.repository.UserRepo;
+import net.proselyte.jwtappdemo.util.parser.PdfParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 @Slf4j
@@ -54,5 +59,17 @@ public class BookingService {
 
     public Iterable<Booking> findAll() {
         return bookingRepo.findAll();
+    }
+
+    public Iterable<Booking> getTimeList(String data, Location location, int reversNumber) {
+       return bookingRepo.findByBookingDateAndLocationAndReversNumberOrderByStartTime(data,location,reversNumber);
+    }
+
+    public void print(String data, Location location,String path) {
+        ArrayList<Booking> bookings =  new ArrayList<>(bookingRepo.findByBookingDateAndLocationOrderByStartTimeAsc(data,location));
+        PdfParser parser = new PdfParser();
+
+         parser.create(bookings,path);
+
     }
 }

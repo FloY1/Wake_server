@@ -4,7 +4,7 @@
   "main": "index.js",
   "repository": "https://github.com/proselytear/jwtappdemo.git",
   "author": "FloY1 <artem.smolonskiy@mail.ru>",
-  "license": "MIT",
+  "license":  "MIT",
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js"

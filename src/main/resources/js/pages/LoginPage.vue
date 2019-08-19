@@ -7,8 +7,6 @@
             <label>Password</label>
             <input required v-model="password" type="password" placeholder="Password"/>
             <hr/>
-            <v-btn @click="log"  >Login</v-btn>
-            <v-btn @click="test"  >test</v-btn>
         </form>
     </div>
 </template>
@@ -24,25 +22,34 @@
             }
         },
         methods: {
-            ...mapActions(['login','addBookingAction']),
+            ...mapActions(['loginAction','addBookingAction','printAction']),
             log(){
                 const user = {
                     phone: this.phone,
                     password: this.password
                 }
-                this.login(user)
+                this.loginAction(user)
             },
             test(){
                 const booking = {
-                    bookingDate: '12',
+                    bookingDate: '06.08.2019',
                     location: 'LOGOISK',
                     reversNumber: '1',
-                    startTime: '23',
-                    endTime: '34',
+                    startTime: '1100',
+                    endTime: '1110',
 
                 }
-                console.log(booking)
+
                 this.addBookingAction(booking)
+            },
+            print(){
+                const inform = {
+                    bookingDate: '07.08.2019',
+                    location: 'LOGOISK',
+                }
+
+
+                this.printAction(inform)
             }
         }
     }
