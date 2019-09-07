@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import net.proselyte.jwtappdemo.model.enums.TicketStatus;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -15,12 +12,14 @@ import javax.persistence.Table;
 public class TicketStory {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String data;
+    private String date;
 
     private int time;
 
+    @Enumerated(EnumType.STRING)
     private TicketStatus status;
 
     @ManyToOne

@@ -9,14 +9,16 @@ import org.springframework.stereotype.Service;
 public class TicketService {
 
     private TicketRepo ticketRepo;
+    private UserService userService;
 
     @Autowired
-    public TicketService(TicketRepo ticketRepo) {
+    public TicketService(TicketRepo ticketRepo,UserService userService) {
         this.ticketRepo = ticketRepo;
+        this.userService = userService;
     }
 
 
     public Iterable<TicketStory> getTicketStoryByUser(long id){
-        return ticketRepo.findAllByClient(id);
+        return ticketRepo.findByClient(userService.findUserById(id) );
     }
 }

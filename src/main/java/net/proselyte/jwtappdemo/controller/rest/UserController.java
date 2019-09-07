@@ -1,13 +1,12 @@
 package net.proselyte.jwtappdemo.controller.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.itextpdf.text.Document;
 import net.proselyte.jwtappdemo.JsonView.Views;
 import net.proselyte.jwtappdemo.dto.EventType;
 import net.proselyte.jwtappdemo.dto.ObjectType;
 import net.proselyte.jwtappdemo.model.Booking;
+import net.proselyte.jwtappdemo.model.TicketStory;
 import net.proselyte.jwtappdemo.model.enums.Location;
-import net.proselyte.jwtappdemo.model.enums.TicketStatus;
 import net.proselyte.jwtappdemo.security.jwt.JwtUser;
 import net.proselyte.jwtappdemo.service.BookingService;
 import net.proselyte.jwtappdemo.service.TicketService;
@@ -15,17 +14,12 @@ import net.proselyte.jwtappdemo.service.UserService;
 import net.proselyte.jwtappdemo.util.WsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 @RestController
@@ -59,12 +53,27 @@ public class UserController {
 
 
     @PostMapping(value = "booking",produces = "application/json" )
+    @JsonView(Views.IdTimeDateReversStatus.class)
     public Booking addBooking(@RequestBody Booking booking,
                                 @AuthenticationPrincipal JwtUser user){
 
         Booking newBooking = bookingService.addNewBooking(booking, user.getId());
+
         wsSender.accept(EventType.CREATE,newBooking);
         return newBooking;
+    }
+
+    @PutMapping(value = "booking",produces = "application/json" )
+    public void updateBooking(@RequestBody List<Booking> bookings,
+                              @AuthenticationPrincipal JwtUser user){
+
+        bookings.forEach(booking->{
+        Booking newBooking = bookingService.updateNewBooking(booking, user.getId());
+        if(newBooking!=null) {
+            wsSender.accept(EventType.ACCEPT, newBooking);
+
+        }
+        });
     }
 
     @GetMapping("history")
@@ -73,11 +82,11 @@ public class UserController {
     }
 
     @GetMapping("seasonTicketHistory")
-    public Iterable<TicketStatus> getTicketHistory(@AuthenticationPrincipal JwtUser user){
-        return  ticketService.getTicketStoryByUser((user.getId());
+    public Iterable<TicketStory> getTicketHistory(@AuthenticationPrincipal JwtUser user){
+        return  ticketService.getTicketStoryByUser((user.getId()));
     }
 
-    @GetMapping("booking")
+        @GetMapping("booking")
     @JsonView(Views.IdTimeStatus.class)
     public Iterable<Booking> getAllBooking(){
         return bookingService.findAll();
@@ -87,7 +96,6 @@ public class UserController {
     @DeleteMapping("booking/{bookingId}")
     public void getBookingHistory(@PathVariable("bookingId") Long bookingId,
                                   @AuthenticationPrincipal JwtUser user){
-
         bookingService.deleteBooking(bookingId,user.getId());
     }
 
@@ -97,8 +105,6 @@ public class UserController {
     public Iterable<Booking> getTimeList(@RequestHeader Location location,
                                            @RequestHeader String data,
                                            @RequestHeader int reversNumber) {
-
-
         return bookingService.getTimeList(data,location,reversNumber);
     }
 

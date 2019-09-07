@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -35,7 +37,19 @@ public class BookingService {
     }
 
     public Iterable<Booking> getBookingHistory(Long id) {
-        return userRepo.findById(id).get().getSortedBookingHistory();
+        List<Booking> bookingList =  bookingRepo.findByClient_IdAndStatus(id,BookingStatus.BOOKED_NO_ACCEPTED);
+        bookingList.addAll(bookingRepo.findByClient_IdAndStatus(id,BookingStatus.BOOKED));
+        bookingList.sort((booking, t1) -> {
+            if(dateCompare(t1.getBookingDate(),booking.getBookingDate())==0){
+                if(booking.getStartTime()>t1.getStartTime()){
+                    return 1;
+                }else {
+                    return -1;
+                }
+            }
+            return dateCompare(t1.getBookingDate(),booking.getBookingDate());
+        });
+        return bookingList;
     }
 
     public void deleteBooking(Long bookingId, Long id) {
@@ -44,6 +58,7 @@ public class BookingService {
             log.warn("user {} does not own (booking {}) , owner it is a user {} ",id,bookingId,booking.getClient().getId());
         }else {
             booking.setStatus(BookingStatus.MISSED);
+            bookingRepo.save(booking);
         }
 
     }
@@ -71,5 +86,34 @@ public class BookingService {
 
          parser.create(bookings,path);
 
+    }
+
+    public Booking updateNewBooking(Booking booking, Long id) {
+        Booking booking1 = bookingRepo.findById(booking.getId()).get();
+        if(booking1.getClient().getId()==id){
+            booking1.setStatus(BookingStatus.BOOKED);
+            bookingRepo.save(booking1);
+            return booking1;
+        }else{
+            return null;
+        }
+    }
+    private int dateCompare(String date,String date1){
+        String s = date.substring(6,10);
+        s= date.substring(3,5);
+        s = date.substring(0,2);
+        if(0==date.substring(6,10).compareTo(date1.substring(6,10))){
+            if(0==date.substring(3,5).compareTo(date1.substring(3,5))){
+                if(0==date.substring(0,2).compareTo(date1.substring(0,2))){
+                    return 0;
+                }else {
+                    return date.substring(0,2).compareTo(date1.substring(0,2));
+                }
+            }else {
+                return date.substring(3,5).compareTo(date1.substring(3,5));
+            }
+        }else {
+            return date.substring(6,10).compareTo(date1.substring(6,10));
+        }
     }
 }

@@ -18,6 +18,7 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(Views.IdTimeDateReversStatus.class)
     private Long id;
 
     @JsonView(Views.IdTimeDateReversStatus.class)
@@ -44,4 +45,7 @@ public class Booking {
     @JsonIgnore
     private User client;
 
+
+    @JsonIgnore
+    private Long createTime;
 }

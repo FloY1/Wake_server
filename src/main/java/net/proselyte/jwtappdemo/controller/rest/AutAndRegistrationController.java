@@ -65,7 +65,7 @@ public class AutAndRegistrationController {
             String token = jwtTokenProvider.createToken(phone, user.getRoles());
 
             Map<Object, Object> response = new HashMap<>();
-            response.put("username", phone);
+            response.put("id", user.getId());
             response.put("token", token);
 
             return ResponseEntity.ok(response);
