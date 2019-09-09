@@ -47,5 +47,7 @@ public class Booking {
 
 
     @JsonIgnore
-    private Long createTime;
+    private long createTime;
+
+
 }

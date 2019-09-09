@@ -13,5 +13,6 @@ public interface BookingRepo extends JpaRepository<Booking,Long> {
     List<Booking> findByBookingDateAndLocationAndReversNumberOrderByStartTime(String bookingDate, Location location, int reversNumber);
     List<Booking> findByBookingDateAndLocationOrderByStartTimeAsc(String bookingDate, Location location);
     List<Booking> findByClient_IdAndStatus(Long clientID, BookingStatus status);
+    List<Booking> findByStatus( BookingStatus status);
 
 }

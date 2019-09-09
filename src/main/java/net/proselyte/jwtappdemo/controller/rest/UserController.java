@@ -15,6 +15,8 @@ import net.proselyte.jwtappdemo.util.WsSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,7 @@ import java.util.function.BiConsumer;
 
 @RestController
 @RequestMapping("user")
+@EnableScheduling
 public class UserController {
 
 
@@ -52,6 +55,38 @@ public class UserController {
     }
 
 
+    @GetMapping("history")
+
+    public Iterable<Booking> getBookingHistory(@AuthenticationPrincipal JwtUser user){
+        return  bookingService.getBookingHistory(user.getId());
+    }
+
+    @GetMapping("seasonTicketHistory")
+    public Iterable<TicketStory> getTicketHistory(@AuthenticationPrincipal JwtUser user){
+        return  ticketService.getTicketStoryByUser((user.getId()));
+    }
+
+    @GetMapping("booking")
+    @JsonView(Views.IdTimeDateReversStatus.class)
+    public Iterable<Booking> getAllBooking(){
+        return bookingService.findAll();
+
+    }
+    @GetMapping("/timeList")
+    @JsonView(Views.IdTimeStatus.class)
+    public Iterable<Booking> getTimeList(@RequestHeader Location location,
+                                         @RequestHeader String data,
+                                         @RequestHeader int reversNumber,
+                                         @AuthenticationPrincipal JwtUser user) {
+        return bookingService.getTimeList(data,location,reversNumber,user.getId());
+    }
+
+
+
+
+
+
+
     @PostMapping(value = "booking",produces = "application/json" )
     @JsonView(Views.IdTimeDateReversStatus.class)
     public Booking addBooking(@RequestBody Booking booking,
@@ -59,9 +94,30 @@ public class UserController {
 
         Booking newBooking = bookingService.addNewBooking(booking, user.getId());
 
+
         wsSender.accept(EventType.CREATE,newBooking);
         return newBooking;
     }
+
+    @PostMapping("/print")
+    public String getTimeList(@RequestBody Booking booking) {
+
+        String path = "iTextTable.pdf";
+        if(!"dev".equals(profile)){
+            path = "/opt/tomcat/latest/iTextTable.pdf";
+        }
+
+        bookingService.print(booking.getBookingDate(),booking.getLocation(),path);
+        System.out.println(booking.getBookingDate()+" "+booking.getLocation());
+        return "yse";
+    }
+
+
+
+
+
+
+
 
     @PutMapping(value = "booking",produces = "application/json" )
     public void updateBooking(@RequestBody List<Booking> bookings,
@@ -76,51 +132,34 @@ public class UserController {
         });
     }
 
-    @GetMapping("history")
-    public Iterable<Booking> getBookingHistory(@AuthenticationPrincipal JwtUser user){
-        return  bookingService.getBookingHistory(user.getId());
-    }
 
-    @GetMapping("seasonTicketHistory")
-    public Iterable<TicketStory> getTicketHistory(@AuthenticationPrincipal JwtUser user){
-        return  ticketService.getTicketStoryByUser((user.getId()));
-    }
 
-        @GetMapping("booking")
-    @JsonView(Views.IdTimeStatus.class)
-    public Iterable<Booking> getAllBooking(){
-        return bookingService.findAll();
-        
-    }
+
+
+
 
     @DeleteMapping("booking/{bookingId}")
     public void getBookingHistory(@PathVariable("bookingId") Long bookingId,
                                   @AuthenticationPrincipal JwtUser user){
-        bookingService.deleteBooking(bookingId,user.getId());
+        wsSender.accept(EventType.CANSELED, bookingService.deleteBooking(bookingId,user.getId()));
     }
 
 
-    @GetMapping("/timeList")
-    @JsonView(Views.IdTimeStatus.class)
-    public Iterable<Booking> getTimeList(@RequestHeader Location location,
-                                           @RequestHeader String data,
-                                           @RequestHeader int reversNumber) {
-        return bookingService.getTimeList(data,location,reversNumber);
+
+
+
+    @Scheduled(fixedRate = 60000)
+    private void removeBookingNoAcepted(){
+
+        List<Booking> removeBooking = bookingService.removeBookingNoAcepted();
+        removeBooking.forEach(booking -> {
+            wsSender.accept(EventType.TIME_IS_OVER,booking);
+        });
     }
 
 
-    @PostMapping("/print")
-    public String getTimeList(@RequestBody Booking booking) {
 
-        String path = "iTextTable.pdf";
-        if(!"dev".equals(profile)){
-            path = "/opt/tomcat/latest/iTextTable.pdf";
-        }
 
-        bookingService.print(booking.getBookingDate(),booking.getLocation(),path);
-        System.out.println(booking.getBookingDate()+" "+booking.getLocation());
-        return "yse";
-    }
 
 
 
