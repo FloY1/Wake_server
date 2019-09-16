@@ -2,9 +2,8 @@
     <div>
 
         <login-page v-if="!isUser"></login-page>
-        <v-btn @click="log"  >Login</v-btn>
-        <v-btn @click="test"  >test</v-btn>
-        <v-btn @click="print"  download="" >Скачать файл</v-btn>
+<!--        <v-btn @click="test"  >test</v-btn>-->
+<!--        <v-btn @click="print"  download="" >Скачать файл</v-btn>-->
 
     </div>
 </template>

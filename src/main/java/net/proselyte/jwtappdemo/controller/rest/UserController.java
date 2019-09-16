@@ -2,6 +2,7 @@ package net.proselyte.jwtappdemo.controller.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import net.proselyte.jwtappdemo.JsonView.Views;
+import net.proselyte.jwtappdemo.dto.BookingDto;
 import net.proselyte.jwtappdemo.dto.EventType;
 import net.proselyte.jwtappdemo.dto.ObjectType;
 import net.proselyte.jwtappdemo.model.Booking;
@@ -33,7 +34,7 @@ public class UserController {
     private UserService userService;
     private BookingService bookingService;
     private TicketService ticketService;
-    private final BiConsumer<EventType,Booking> wsSender;
+    private final BiConsumer<EventType, BookingDto> wsSender;
 
     @Value("${spring.profile.active:prod}")
     private String profile;
@@ -46,7 +47,7 @@ public class UserController {
         this.ticketService = ticketService;
         this.userService = userService;
         this.bookingService = bookingService;
-        this.wsSender = wsSender.getSender(ObjectType.BOOKING,Views.IdTimeDateReversStatus.class);
+        this.wsSender = wsSender.getSender(ObjectType.BOOKING,Views.ClientId.class);
     }
 
     @GetMapping("seasonTicket")
@@ -95,7 +96,7 @@ public class UserController {
         Booking newBooking = bookingService.addNewBooking(booking, user.getId());
 
 
-        wsSender.accept(EventType.CREATE,newBooking);
+        wsSender.accept(EventType.CREATE,new BookingDto(newBooking));
         return newBooking;
     }
 
@@ -126,7 +127,7 @@ public class UserController {
         bookings.forEach(booking->{
         Booking newBooking = bookingService.updateNewBooking(booking, user.getId());
         if(newBooking!=null) {
-            wsSender.accept(EventType.ACCEPT, newBooking);
+            wsSender.accept(EventType.ACCEPT, new BookingDto(newBooking));
 
         }
         });
@@ -139,11 +140,16 @@ public class UserController {
 
 
     @DeleteMapping("booking/{bookingId}")
-    public void getBookingHistory(@PathVariable("bookingId") Long bookingId,
+    public void deleteBooking(@PathVariable("bookingId") Long bookingId,
                                   @AuthenticationPrincipal JwtUser user){
-        wsSender.accept(EventType.CANSELED, bookingService.deleteBooking(bookingId,user.getId()));
+        wsSender.accept(EventType.CANSELED, new BookingDto(bookingService.deleteBooking(bookingId,user.getId())));
     }
 
+    @DeleteMapping("booking_free/{bookingId}")
+    public void freeBooking(@PathVariable("bookingId") Long bookingId,
+                                  @AuthenticationPrincipal JwtUser user){
+        wsSender.accept(EventType.FREE, new BookingDto(bookingService.delete(bookingId,user.getId())));
+    }
 
 
 
@@ -153,7 +159,7 @@ public class UserController {
 
         List<Booking> removeBooking = bookingService.removeBookingNoAcepted();
         removeBooking.forEach(booking -> {
-            wsSender.accept(EventType.TIME_IS_OVER,booking);
+            wsSender.accept(EventType.TIME_IS_OVER,new BookingDto(booking));
         });
     }
 

@@ -143,4 +143,17 @@ public class BookingService {
         });
         return  removeBooking;
     }
+
+    public Booking delete(Long bookingId, Long id) {
+        Booking booking = bookingRepo.findById(bookingId).get();
+        if(booking.getClient().getId()!=id){
+            log.warn("user {} does not own (booking {}) , owner it is a user {} ",id,bookingId,booking.getClient().getId());
+            return null;
+
+        }else {
+            bookingRepo.delete(booking);
+            return booking;
+        }
+
+    }
 }

@@ -1,13 +1,37 @@
 <template>
     <div>
-        <form>
-            <h1>Sign in</h1>
-            <label>User name</label>
-            <input required v-model="phone" type="text" placeholder="Snoopy"/>
-            <label>Password</label>
-            <input required v-model="password" type="password" placeholder="Password"/>
-            <hr/>
+
+        <v-content>
+            <v-container fluid fill-height>
+                <v-layout  align-center justify-center>
+                    <v-flex
+                            xs12
+                            sm6
+                            md2>
+        <form justify="center">
+             <v-text-field label="Номер Телефона" v-model="phone">
+            </v-text-field>
+ы
+            <v-text-field
+                    v-model="password"
+                    :append-icon="show1 ? 'visibility' : 'visibility_off'"
+                    :rules="[rules.required, rules.min]"
+                    :type="show1 ? 'text' : 'password'"
+
+                    label="Normal with hint text"
+                    hint="At least 8 characters"
+                    counter
+                    @click:append="show1 = !show1"
+            ></v-text-field>
+
+            <v-btn @click="log"  >Login</v-btn>
+
         </form>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+
     </div>
 </template>
 
@@ -19,6 +43,11 @@
             return {
                 phone: '',
                 password: '',
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 8 || 'Min 8 characters',
+                    emailMatch: () => ('The email and password you entered don\'t match'),
+                }
             }
         },
         methods: {
@@ -56,5 +85,10 @@
 </script>
 
 <style scoped>
+
+
+
+
+
 
 </style>

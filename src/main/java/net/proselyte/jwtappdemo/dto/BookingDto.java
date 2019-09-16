@@ -1,31 +1,27 @@
-package net.proselyte.jwtappdemo.model;
-
+package net.proselyte.jwtappdemo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import lombok.Data;
 import net.proselyte.jwtappdemo.JsonView.Views;
+import net.proselyte.jwtappdemo.model.Booking;
+import net.proselyte.jwtappdemo.model.User;
 import net.proselyte.jwtappdemo.model.enums.BookingStatus;
 import net.proselyte.jwtappdemo.model.enums.Location;
 
 import javax.persistence.*;
 
-@Data
-@Entity
-@Table
-public class Booking {
+public class BookingDto {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(Views.IdTimeStatus.class)
+
+    @JsonView(Views.IdTimeDateReversStatus.class)
     private Long id;
 
     @JsonView(Views.IdTimeDateReversStatus.class)
     private String bookingDate;
 
 
-    @Enumerated(EnumType.STRING)
+
     @JsonView(Views.IdTimeDateReversStatus.class)
     private Location location;
 
@@ -37,17 +33,22 @@ public class Booking {
     @JsonView(Views.IdTimeStatus.class)
     private int endTime;
 
-    @Enumerated(EnumType.STRING)
+
     @JsonView(Views.IdTimeStatus.class)
     private BookingStatus status;
 
-    @ManyToOne
-    @JsonIgnore
-    private User client;
+    @JsonView(Views.ClientId.class)
+    private long clientId;
 
 
-    @JsonIgnore
-    private long createTime;
-
-
+    public BookingDto(Booking booking) {
+        this.id = booking.getId();
+        this.bookingDate = booking.getBookingDate();
+        this.location = booking.getLocation();
+        this.reversNumber = booking.getReversNumber();
+        this.startTime = booking.getStartTime();
+        this.endTime = booking.getEndTime();
+        this.status = booking.getStatus();
+        this.clientId = booking.getClient().getId();
+    }
 }
