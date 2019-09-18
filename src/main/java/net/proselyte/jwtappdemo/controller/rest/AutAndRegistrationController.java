@@ -19,13 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * REST controller for authentication requests (login, logout, register, etc.)
- *
- * @author Arthem Smolonskiy
- * @version 1.0
- */
-
 @RestController
 @RequestMapping("/login")
 public class AutAndRegistrationController {

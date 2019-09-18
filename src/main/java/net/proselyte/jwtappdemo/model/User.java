@@ -10,12 +10,6 @@ import javax.persistence.*;
 import java.util.List;
 
 
-/**
- * Simple domain object that represents application user.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
 
 @Entity
 @Table(name = "users")
@@ -53,19 +47,7 @@ public class User  {
     @JsonBackReference
     private List<TicketStory> ticketStories ;
 
-    @JsonIgnore
-    public List<Booking> getSortedBookingHistory () {
 
-        for (int i = 0; i < bookingList.size(); i++) {
-            for (int j = i + 1; j < bookingList.size(); j++) {
-                if (bookingList.get(i).getBookingDate().compareTo(bookingList.get(j).getBookingDate()) > 0 || (bookingList.get(i).getBookingDate().compareTo(bookingList.get(j).getBookingDate()) == 0)) {
-
-                }
-
-            }
-        }
-        return bookingList;
-    }
 
 
 }

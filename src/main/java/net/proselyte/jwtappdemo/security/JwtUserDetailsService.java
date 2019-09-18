@@ -11,12 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/**
- * Implementation of {@link UserDetailsService} interface for {@link JwtUser}.
- *
- * @author Eugene Suleimanov
- * @version 1.0
- */
 
 @Service
 @Slf4j
